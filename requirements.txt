@@ -16,7 +16,6 @@ kiwisolver==1.4.4
 matplotlib==3.6.2
 Pillow==9.3.0
 pkgutil-resolve-name==1.3.10
-platform-flows==1.0
 plotly==5.11.0
 psutil==5.9.0
 pyarrow==10.0.1
