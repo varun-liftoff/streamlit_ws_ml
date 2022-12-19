@@ -8,7 +8,7 @@ import pandas as pd
 # from wordcloud import WordCloud
 # from wordcloud import STOPWORDS
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import plotly.express as px
 # import seaborn as sns
 
@@ -36,7 +36,7 @@ def load_file():
 df = load_file()
 
 
-label_countplot = px.histogram(df, x="label", color="label", title='Sentiment Countplot')
+label_countplot = px.pie(df, names="label", title='Sentiment Countplot')
 st.plotly_chart(label_countplot, use_container_width=True)
 
 
@@ -54,8 +54,8 @@ def published_sentiment_analysis_bar_graph():
         data_frame=published_sentiment,
         x="published",
         y=["negative", "neutral", "positive"],
-        barmode='group',
-        title='Published - Sentiment Analysis',
+        # barmode='stacked',
+        title='Sentiment by Date',
     )
 
 
@@ -65,22 +65,11 @@ st.plotly_chart(
 )
 
 
-# option = st.selectbox(
-#     "Select Sentiment",
-#     ("Positive", "Negative", "Neutral"),
-# )
-# print(option)
-
-# TOP_DOMAIN = []
-
-
 @st.cache
 def sentiment_analysis_bar_graph(column_name, title):
     sentiment = df.loc[:, [column_name, 'label']]
 
-    # if column_name == 'porn_level':
     sentiment[column_name] = sentiment[column_name].astype(str)
-        # column_name = 'nsfw_level'
 
     if column_name == 'source_type':
         sentiment['source_type'] = sentiment['source_type'].apply(lambda x: x.split(',')[1].replace('_',', '))
@@ -103,66 +92,28 @@ def sentiment_analysis_bar_graph(column_name, title):
         data_frame=groupby_sentiment.head(10),
         x=column_name,
         y=["negative", "neutral", "positive"],
-        barmode='group',
+        # barmode='stacked',
         title=title,
     )
 
 
 st.plotly_chart(sentiment_analysis_bar_graph(
     'extra_author_attributes.name',
-    'Author - Sentiment Analysis'
+    'Sentiment by Author'
 ))
 st.plotly_chart(sentiment_analysis_bar_graph(
     'domain_url',
-    'Domain - Sentiment Analysis'
+    'Sentiment by Domain'
 ))
 st.plotly_chart(sentiment_analysis_bar_graph(
     'source_type',
-    'Source Type - Sentiment Analysis'
+    'Sentiment by Source'
 ))
 st.plotly_chart(sentiment_analysis_bar_graph(
     'extra_source_attributes.world_data.country',
-    'Country - Sentiment Analysis'
+    'Sentiment by Country'
 ))
 
-st.plotly_chart(sentiment_analysis_bar_graph(
-    'nsfw_level',
-    'NSFW - Sentiment Analysis'
-))
-
-# st.subheader("Co-relation between NSFW content and sentiment")
-# sol = []
-# pornLevelIndex = df.porn_level.value_counts().index.sort_values()
-# for x in pornLevelIndex:
-#     if x==0:
-#         continue
-#     temp = []
-#     tempdf = df[df.porn_level==x].label.value_counts()
-#     tempdfIndex= tempdf.index
-#     for i in ['positive', 'negative', 'neutral']:
-#         temp.append(tempdf[i] if i in tempdfIndex else 0)
-#     sol.append(temp)
-# bar1 = [x[0] for x in sol]
-# bar2 = [x[1] for x in sol]
-# bar3 = [x[2] for x in sol]
-# fig, ax = plt.subplots()
-# x= np.arange(len(pornLevelIndex)-1)
-# width=0.5
-# rects1 = ax.bar(x - 0.5, bar1, width, label='postive')
-# rects2 = ax.bar(x , bar2, width, label='negative')
-# rects2 = ax.bar(x + 0.5, bar3, width, label='neutral')
-# ax.set_ylabel('Count')
-# ax.set_title('Sentiment breakdown by levels of NSFW content')
-# ax.set_xlabel('NSFW Level')
-# ax.legend()
-# st.pyplot(fig)
-# domain_sentiment = df.groupby(
-#     ['domain_url', 'label']).label.count().unstack()
-# domain_sentiment = domain_sentiment.fillna(0)
-# domain_sentiment = domain_sentiment.reset_index()
-# domain_sentiment = domain_sentiment.sort_values(
-#     option.lower(), ascending=False)
-# TOP_DOMAIN = domain_sentiment['domain_url'].head(10).tolist()
 
 # option_2 = st.sidebar.multiselect(
 #     "Select Domains",
