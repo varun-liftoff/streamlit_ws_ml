@@ -36,3 +36,4 @@ tzdata==2022.7
 tzlocal==4.2
 validators==0.20.0
 wordcloud==1.8.2.2
+openpyxl
